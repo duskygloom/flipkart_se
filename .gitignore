@@ -1,0 +1,17 @@
+# python venv
+Include/
+Lib/
+Scripts/
+share/
+pyvenv.cfg
+
+# vscode
+.vscode/
+
+# python
+__pycache__/
+
+
+# drawio
+*.drawio.bkp
+

@@ -8,7 +8,7 @@ from datetime import datetime
 
 order = Order("Order1", datetime.now(), Buyer("Hans", "Kolkata"), Seller("Flipkart", "Mumbai"))
 order.add_product_qty(Product("5 year old", 500, 1000, 150))
-order.add_product_qty(Product("Magic gell crystals", 100, 400, 50), 4)
+order.add_product_qty(Product("Milk", 40, 80, 10), 4)
 
 invoice = Invoice("Invoice1", order)
 

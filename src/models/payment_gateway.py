@@ -3,9 +3,9 @@ from enum import Enum
 from rich.box import SQUARE
 from rich.panel import Panel
 from rich.table import Table
+from rich.console import Console
 
 from models.order import Order
-from models.console import console
 from models.product import Product
 
 
@@ -38,8 +38,10 @@ class Invoice:
         return table
 
     def print(self):
+        console = Console()
+        # console = Console(record=True)
         console.print()
-        console.print(Panel(f"[bold]Invoice[/bold]", SQUARE, expand=False))
+        console.print(Panel(f"[bold]Invoice[/bold]", SQUARE, expand=False), justify="center")
         console.print()
         console.print(f"[bold]Seller:[/bold] {self.order.seller.name}")
         console.print(f"[bold]Seller address:[/bold] {self.order.seller.address}")
@@ -53,6 +55,7 @@ class Invoice:
         console.print()
         console.print(self.order.get_products_table())
         console.print()
+        # console.save_svg("../screenshots/invoice.svg", title="Invoice")
 
 
 class PaymentGateway:

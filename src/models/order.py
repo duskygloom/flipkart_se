@@ -12,6 +12,7 @@ from models.product import Product
 shipment_charge = 40
 shipment_charge_exemption_price = 500
 
+
 class Order:
     id: str
     date: datetime
@@ -19,7 +20,8 @@ class Order:
     seller: Seller
     product_qty: dict[Product, int]
 
-    def __init__(self, id: str, date: datetime, buyer: Buyer, seller: Seller, product_qty: dict[Product, int] = {}) -> None:
+    def __init__(self, id: str, date: datetime, buyer: Buyer, seller: Seller,
+                 product_qty: dict[Product, int] = {}) -> None:
         self.id = id
         self.date = date
         self.buyer = buyer
@@ -36,7 +38,8 @@ class Order:
         '''
         Returns
         -------
-        Cost of all the products in the order but does not include shipment charge.
+        Cost of all the products in the order but does not include shipment
+        charge.
         '''
         total = 0
         for product in self.product_qty:
@@ -47,15 +50,16 @@ class Order:
         if self.get_gross_amount() < shipment_charge_exemption_price:
             return shipment_charge
         return 0
-    
+
     def get_total_amount(self) -> float:
         '''
         Returns
         -------
-        Cost of all the products in the order and also includes shipment charge.
+        Cost of all the products in the order and also includes shipment
+        charge.
         '''
         return self.get_gross_amount() + self.get_shipment_charge()
-    
+
     def get_products_table(self) -> Table:
         table = Table(box=SQUARE, show_lines=True)
         table.add_column("Title")
@@ -74,6 +78,8 @@ class Order:
                 get_currency_string(product.get_tax_amount()*qty),
                 get_currency_string(product.get_total_amount()*qty)
             )
-        table.add_row("Shipment", "", "", "", get_currency_string(self.get_shipment_charge()))
-        table.add_row("Grand total", "", "", "", "", get_currency_string(self.get_total_amount()), style="bold")
+        shipmentstr = get_currency_string(self.get_shipment_charge())
+        table.add_row("Shipment", "", "", "", shipmentstr)
+        totalstr = get_currency_string(self.get_total_amount())
+        table.add_row("Grand total", "", "", "", "", totalstr, style="bold")
         return table

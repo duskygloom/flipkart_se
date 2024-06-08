@@ -6,7 +6,9 @@ from models.payment_gateway import Invoice
 
 from datetime import datetime
 
-order = Order("Order1", datetime.now(), Buyer("Hans", "Kolkata"), Seller("Flipkart", "Mumbai"))
+buyer = Buyer("Hans", "Kolkata")
+seller = Seller("Flipkart", "Mumbai")
+order = Order("Order1", datetime.now(), buyer, seller)
 order.add_product_qty(Product("5 year old", 500, 1000, 150))
 order.add_product_qty(Product("Milk", 40, 80, 10), 4)
 

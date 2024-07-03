@@ -3,13 +3,6 @@ from utils.styles import *
 
 from models.store import *
 
-<<<<<<< HEAD
-buyer = Buyer("Hans", "Kolkata")
-seller = Seller("Flipkart", "Mumbai")
-order = Order("Order1", datetime.now(), buyer, seller)
-order.add_product_qty(Product("5 year old", 500, 1000, 150))
-order.add_product_qty(Product("Milk", 40, 80, 10), 4)
-=======
 from rich.box import Box
 from rich.box import HEAVY
 from rich.rule import Rule
@@ -18,7 +11,6 @@ from rich.table import Table
 from rich.prompt import Prompt
 from rich.console import Console
 from rich.columns import Columns
->>>>>>> a2f8471 (Lots of new things)
 
 # config
 

@@ -17,3 +17,7 @@ class Product:
 
     def get_total_amount(self) -> float:
         return (self.sell_price - self.discount) * (1 + self.tax_percent)
+
+__all__ = [
+    Product
+]

@@ -83,3 +83,7 @@ class Order:
         totalstr = get_currency_string(self.get_total_amount())
         table.add_row("Grand total", "", "", "", "", totalstr, style="bold")
         return table
+
+__all__ = [
+    Order
+]

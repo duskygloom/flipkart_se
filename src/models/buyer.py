@@ -5,3 +5,7 @@ class Buyer:
     def __init__(self, name: str, address: str) -> None:
         self.name = name
         self.address = address
+
+_all__ = [
+    Buyer
+]

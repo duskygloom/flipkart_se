@@ -6,7 +6,7 @@ pydir="bin/python"
 
 cd $appdir/src
 
-$appdir/$pydir cli.py
+$appdir/$pydir cli.py $@
 
 cd $prevdir
 

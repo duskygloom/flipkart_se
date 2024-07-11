@@ -57,12 +57,12 @@ app_categories: categories_t = {
     "transactions": {
         "pending": {
             "description": "List pending transactions.",
-            "usage": f"[{styles['category_title_style']}]orders[/] [{styles['category_subtitle_style']}]pending[/]",
+            "usage": f"[{styles['category_title_style']}]transactions[/] [{styles['category_subtitle_style']}]pending[/]",
             "action": partial(print, "pending")
         },
         "past": {
             "description": "List past transactions.",
-            "usage": f"[{styles['category_title_style']}]orders[/] [{styles['category_subtitle_style']}]past[/] <year>",
+            "usage": f"[{styles['category_title_style']}]transactions[/] [{styles['category_subtitle_style']}]past[/] <year>",
             "action": partial(print, "past")
         }
     }

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+prevdir=`pwd`
+appdir="$HOME/Programs/flipkart_se"
+pydir="bin/python"
+
+cd $appdir/src
+
+$appdir/$pydir cli.py
+
+cd $prevdir
+

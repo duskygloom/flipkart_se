@@ -1,8 +1,6 @@
 {
-    "title": "bold blue",
-    "title_border": "yellow",
-    "subtitle": "bold white",
-    "subtitle_border": "white",
-    "exit_text": "bold yellow",
-    "exit_border": "blue"
+    "app_title_style": "bold yellow",
+    "app_body_style": "white",
+    "category_title_style": "bold blue",
+    "category_subtitle_style": "yellow"
 }

@@ -5,12 +5,14 @@ storing products from and into databases.
 
 from models.product import Product
 
+
 class Store:
     @staticmethod
     def search(query: str) -> list[Product]:
         products = []
-        # fetch from database
+        sql_query = "select * from products where keywords like *%s"
         return products
+
 
 __all__ = [
     "Store"

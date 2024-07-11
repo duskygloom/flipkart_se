@@ -6,6 +6,7 @@ class Buyer:
         self.name = name
         self.address = address
 
+
 _all__ = [
     Buyer
 ]

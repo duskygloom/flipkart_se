@@ -7,12 +7,10 @@ styles_file = "styles.json"
 styles_encoding = "utf-8"
 
 sub_styles_t = Literal[
-    "title",
-    "title_border",
-    "subtitle",
-    "subtitle_border",
-    "exit_text",
-    "exit_border"
+    "app_title_style",
+    "app_body_style",
+    "category_title_style",
+    "category_subtitle_style"
 ]
 
 styles_t = Dict[sub_styles_t, str]

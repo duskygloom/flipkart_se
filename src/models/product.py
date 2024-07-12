@@ -1,3 +1,8 @@
+from models.user import *
+
+from utils.time import *
+
+
 class Product:
     product_id: int
     name: str
@@ -9,7 +14,10 @@ class Product:
     def __init__(self, product_id: int, name: str, keywords: str, description: str, price: float, discount: float):
         self.product_id = product_id
         self.name = name
-        self.keywords = keywords.split(',')
+        self.keywords = []
+        for phrase in keywords.split(', '):
+            for word in phrase.split(','):
+                self.keywords.append(word)
         self.description = description
         self.price = price
         self.discount = discount
@@ -19,6 +27,28 @@ class Product:
         if len(row) < 6:
             return None
         return Product(row[0], row[1], row[2], row[3], row[4], row[5])
+    
+    def get_product_sell_query(self, seller: Seller) -> str:
+        '''
+        Description
+        -----------
+        Returns the query to be ran in the products table
+        when a new product is added by a seller.
+        '''
+        query = "insert into products (seller_name, keywords, description, price, discount) values "
+        query += f"('{seller.name}', '{self.keywords}', '{self.description}', {self.price}, {self.discount})"
+        return query
+    
+    def get_product_transaction_query(self, seller: Seller) -> str:
+        '''
+        Description
+        -----------
+        Returns the query to be ran in the transactions table
+        when a new product is added by a seller.
+        '''
+        query = "insert into transactions (product_id, seller_name, sold_time) values "
+        query += f"('{self.product_id}', '{seller.name}', '{get_current_strftime()}')"
+        return query
 
 
 __all__ = [

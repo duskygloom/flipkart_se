@@ -56,104 +56,104 @@ values (
 
 -- accounts table values
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"duckbuys@flipkart",
 	"12345678"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"catbuys@flipkart",
 	"fishlove<3"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"bagbuys@flipkart",
 	"987654321"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"schoolbagbuys@flipkart",
 	"fishlove<3"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"speakerbuys@flipkart",
 	"352"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"bluetoothspeakerbuys@flipkart",
 	"fishlove<3"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"mobilebuys@flipkart",
 	"24"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"samsungmobilebuys@flipkart",
 	"fishlove<3"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"bottlebuys@flipkart",
 	"1000"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"miltonbottlebuys@flipkart",
 	"fishlove<3"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"laptopbuys@flipkart",
 	"196590"
 );
 
-insert into accounts values (
+insert into accounts (username, password) values (
 	"lenovolaptopbuys@flipkart",
 	"fishlove<3"
 );
 
 -- transactions table values
 
-insert into transactions values (
+insert into transactions (product_id, buyer_name, seller_name, bought_price) values (
 	1,
 	"duckbuys@flipkart",
 	"catbuys@flipkart",
 	1000
 );
 
-insert into transactions values (
+insert into transactions (product_id, buyer_name, seller_name, bought_price) values (
 	2,
 	"bagbuys@flipkart",
 	"schoolbagbuys@flipkart",
 	500
 );
 
-insert into transactions values (
+insert into transactions (product_id, buyer_name, seller_name, bought_price) values (
 	3,
 	"speakerbuys@flipkart",
 	"bluetoothspeakerbuys@flipkart",
 	2091
 );
 
-insert into transactions values (
+insert into transactions (product_id, buyer_name, seller_name, bought_price) values (
 	4,
 	"mobilebuys@flipkart",
 	"samsungmobilebuys@flipkart",
 	5000
 );
 
-insert into transactions values (
+insert into transactions (product_id, buyer_name, seller_name, bought_price) values (
 	5,
 	"bottlebuys@flipkart",
 	"miltonbottlebuys@flipkart",
 	206
 );
 
-insert into transactions values (
+insert into transactions (product_id, buyer_name, seller_name, bought_price) values (
 	6,
 	"laptopbuys@flipkart",
 	"lenovolaptopbuys@flipkart",

@@ -1,12 +1,11 @@
 from rich.box import SQUARE
 from rich.panel import Panel
 from rich.table import Table
-from rich.console import Console
 
 from utils.time import *
+from utils.console import *
 
 from models.order import Order
-from models.product import Product
 
 
 class Invoice:
@@ -27,7 +26,6 @@ class Invoice:
         return table
 
     def print(self):
-        console = Console()
         console.print()
         title_panel = Panel(f"[bold]Invoice[/bold]", SQUARE, expand=False)
         console.print(title_panel, justify="center")

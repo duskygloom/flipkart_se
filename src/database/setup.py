@@ -137,12 +137,21 @@ def optional_setup() -> bool:
     sql = SQL.get_default()
     if not sql:
         return False
-    with open("database/optional_setup.sql") as sql_file:
-        sql_script = sql_file.read()
-    queries = [query.strip() for query in sql_script.split(';')]
-    for query in queries:
-        if not sql.execute(query, commit=True):
-            return False
+    queries = []
+    with open("database/optional_setup.sql") as sqlfile:
+        query = ""
+        line = sqlfile.readline().strip()
+        while line != "":
+            if line.startswith("--") or line == "":
+                line = sqlfile.readline()
+                continue
+            elif line.endswith(";"):
+                query += " " + line
+                queries.append(query)
+                console.print(query)
+            else:
+                query += " " + line
+            line = sqlfile.readline()
     return True
 
 

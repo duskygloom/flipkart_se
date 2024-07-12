@@ -2,6 +2,7 @@ from typing import Dict, Literal
 
 from rich.box import SQUARE
 from rich.panel import Panel
+from rich.prompt import Prompt
 
 from functools import partial
 
@@ -9,6 +10,7 @@ from utils.styles import *
 from utils.console import *
 
 from models.store import *
+from models.account_manager import *
 
 from database.setup import *
 
@@ -31,6 +33,46 @@ def buy(*args):
     store = Store()
     invoice = store.buy(product_id)
     console.print(invoice)
+
+
+def sell(*args):
+    store = Store()
+    if store.sell():
+        console.print("Product added successfully.")
+    else:
+        console.print("Product could not be added.")
+
+
+def search(*args):
+    if len(args) <= 0:
+        logger.error("No query has been searched.")
+        return
+    query = " ".join(args)
+    store = Store()
+    results = store.search(query)
+    try:
+        console.print(next(results))
+    except StopIteration:
+        ...
+
+
+def login(*args):
+    username = Prompt.ask("Username")
+    password = Prompt.ask("Password", password=True)
+    if AccountManager.login(username, password):
+        console.print(f"Logged in as [{styles['highlight']}]{username}[/]")
+    else:
+        console.print(f"Could not log in as [{styles['highlight']}]{username}[/]")
+
+
+def logout(*args):
+    user = AccountManager.logged_user()
+    if AccountManager.logout() and user:
+        console.print(f"Logged out of [{styles['highlight']}]{user.name}[/]")
+    elif user:
+        console.print(f"Could not log out of [{styles['highlight']}]{user.name}[/]")
+    else:
+        console.print(f"No account was logged in.")
 
 
 def primary(*args):
@@ -68,12 +110,12 @@ app_categories: categories_t = {
         "sell": {
             "description": "Sell a product.",
             "usage": get_usage("product", "sell"),
-            "action": partial(print, "sell")
+            "action": sell
         },
         "search": {
             "description": "Search for a product.",
             "usage": get_usage("product", "search", "<query>"),
-            "action": partial(print, "search")
+            "action": search
         }
     },
     "account": {
@@ -85,12 +127,12 @@ app_categories: categories_t = {
         "login": {
             "description": "Log into your account.",
             "usage": get_usage("account", "login"),
-            "action": partial(print, "login")
+            "action": login
         },
         "logout": {
             "description": "Log out of your account.",
             "usage": get_usage("account", "logout"),
-            "action": partial(print, "logout")
+            "action": logout
         }
     },
     "transactions": {
@@ -165,7 +207,7 @@ class App:
             return False
         if not args[2] in self.categories[args[1]]:
             return False
-        self.categories[args[1]][args[2]]["action"](args[3:])
+        self.categories[args[1]][args[2]]["action"](*args[3:])
         return True
 
 

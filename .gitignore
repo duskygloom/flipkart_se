@@ -16,6 +16,9 @@ lib64
 __pycache__/
 test.*
 
-
 # drawio
 *.drawio.bkp
+
+# system specific scripts
+flipkart.bat
+flipkart

@@ -38,7 +38,7 @@ select * from products natural join transactions where buyer_name = NULL and
 
 -- logging in
 
-select username from accounts where username == "duckbuys@flipkart" and password == "12345678";
+select username from accounts where username = "duckbuys@flipkart" and password = "12345678";
 -- update config['current_user'] in config file
 
 

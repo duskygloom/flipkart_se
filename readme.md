@@ -19,6 +19,10 @@ In case git is not installed, download the zip from the guthub and extract it.
 1. Install python3 from your package manager.
 2. Install python3-virtualenv from the package manager (the names of the packages may change depending on the package manager).
 3. Clone the project repository from github.
+```python -m pip install virtualenv```
 4. Go into the project directory and create a virtual environment.
+```python -m venv .```
 5. Run the installation script.
+```chmod +x ./install.sh && ./install.sh```
 6. Run the newly created bash script.
+```./flipkart```

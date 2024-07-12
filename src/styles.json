@@ -6,5 +6,6 @@
     "warning_title_style": "bold yellow",
     "warning_body_style": "bold yellow",
     "error_title_style": "bold red",
-    "error_body_style": "bold red"
+    "error_body_style": "bold red",
+    "highlight": "bold blue"
 }

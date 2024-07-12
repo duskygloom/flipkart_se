@@ -14,7 +14,8 @@ sub_styles_t = Literal[
     "warning_title_style",
     "warning_body_style",
     "error_title_style",
-    "error_body_style"
+    "error_body_style",
+    "highlight"
 ]
 
 styles_t = Dict[sub_styles_t, str]

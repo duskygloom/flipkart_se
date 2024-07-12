@@ -56,6 +56,15 @@ def search(*args):
         ...
 
 
+def create(*args):
+    username = Prompt.ask("Username")
+    while AccountManager.user_exists(username):
+        console.print(f"User [{styles['highlight']}]{username}[/] already exists.")
+        username = Prompt.ask("Username")
+    password = Prompt.ask("Password", password=True)
+    AccountManager.create_user(username, password)
+
+
 def login(*args):
     username = Prompt.ask("Username")
     password = Prompt.ask("Password", password=True)
@@ -122,7 +131,7 @@ app_categories: categories_t = {
         "create": {
             "description": "Create a new account.",
             "usage": get_usage("account", "create"),
-            "action": partial(print, "create")
+            "action": create
         },
         "login": {
             "description": "Log into your account.",

@@ -1,24 +1,14 @@
 import sys
 
-from rich.console import Console
-
 from utils.app import *
 from utils.config import *
+from utils.console import *
+
+from database.setup import *
 
 config = get_config()
 
-console = Console()
-
-app = App.get_default(console)
-
-
-def setup_console(console: Console):
-    if console.width > config["screen_width"]:
-        console.width = config["screen_width"]
-
-
-def setup():
-    setup_console(console)
+app = App.get_default()
 
 
 def main():
@@ -28,5 +18,4 @@ def main():
 
 
 if __name__ == "__main__":
-    setup()
     main()

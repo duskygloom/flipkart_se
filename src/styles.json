@@ -2,5 +2,9 @@
     "app_title_style": "bold yellow",
     "app_body_style": "white",
     "category_title_style": "bold blue",
-    "category_subtitle_style": "yellow"
+    "category_subtitle_style": "yellow",
+    "warning_title_style": "bold yellow",
+    "warning_body_style": "bold yellow",
+    "error_title_style": "bold red",
+    "error_body_style": "bold red"
 }

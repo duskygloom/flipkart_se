@@ -10,7 +10,11 @@ sub_styles_t = Literal[
     "app_title_style",
     "app_body_style",
     "category_title_style",
-    "category_subtitle_style"
+    "category_subtitle_style",
+    "warning_title_style",
+    "warning_body_style",
+    "error_title_style",
+    "error_body_style"
 ]
 
 styles_t = Dict[sub_styles_t, str]

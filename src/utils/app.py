@@ -1,13 +1,16 @@
 from typing import Dict, Literal
 
-from rich.console import Console
-from rich.panel import Panel
 from rich.box import SQUARE
+from rich.panel import Panel
 
 from functools import partial
 
 from utils.styles import *
+from utils.console import *
 
+from models.store import *
+
+from database.setup import *
 
 styles = get_styles()
 
@@ -19,58 +22,111 @@ app_name = "Flipkart"
 
 app_description = "Command line interface for dummy flipkart."
 
+
+def buy(*args):
+    if len(args) <= 0:
+        logger.error("Product ID has not been specified.")
+        return
+    product_id = args[0]
+    store = Store()
+    invoice = store.buy(product_id)
+    console.print(invoice)
+
+
+def primary(*args):
+    if primary_setup():
+        logger.info("Primary setup successful.")
+    else:
+        logger.error("Primary setup unsuccessful.")
+
+
+def secondary(*args):
+    if secondary_setup():
+        logger.info("Secondary setup successful.")
+    else:
+        logger.error("Secondary setup unsuccessful.")
+
+
+def optional(*args):
+    if optional_setup():
+        logger.info("Optional setup successful.")
+    else:
+        logger.error("Optional setup unsuccessful.")
+
+
+def get_usage(category: str, subcategory: str, args: str = "") -> str:
+    return f"[{styles['category_title_style']}]{category}[/] [{styles['category_subtitle_style']}]{subcategory}[/] {args}"
+
+
 app_categories: categories_t = {
     "product": {
         "buy": {
             "description": "Buy a product.",
-            "usage": f"[{styles['category_title_style']}]product[/] [{styles['category_subtitle_style']}]buy[/] <product_id>",
-            "action": partial(print, "buy")
+            "usage": get_usage("product", "buy", "<product_id>"),
+            "action": buy
         },
         "sell": {
             "description": "Sell a product.",
-            "usage": f"[{styles['category_title_style']}]product[/] [{styles['category_subtitle_style']}]sell[/]",
+            "usage": get_usage("product", "sell"),
             "action": partial(print, "sell")
         },
         "search": {
             "description": "Search for a product.",
-            "usage": f"[{styles['category_title_style']}]product[/] [{styles['category_subtitle_style']}]search[/] <query>",
+            "usage": get_usage("product", "search", "<query>"),
             "action": partial(print, "search")
         }
     },
     "account": {
         "create": {
             "description": "Create a new account.",
-            "usage": f"[{styles['category_title_style']}]account[/] [{styles['category_subtitle_style']}]create[/]",
+            "usage": get_usage("account", "create"),
             "action": partial(print, "create")
         },
         "login": {
             "description": "Log into your account.",
-            "usage": f"[{styles['category_title_style']}]account[/] [{styles['category_subtitle_style']}]login[/]",
+            "usage": get_usage("account", "login"),
             "action": partial(print, "login")
         },
         "logout": {
             "description": "Log out of your account.",
-            "usage": f"[{styles['category_title_style']}]account[/] [{styles['category_subtitle_style']}]logout[/]",
+            "usage": get_usage("account", "logout"),
             "action": partial(print, "logout")
         }
     },
     "transactions": {
         "pending": {
             "description": "List pending transactions.",
-            "usage": f"[{styles['category_title_style']}]transactions[/] [{styles['category_subtitle_style']}]pending[/]",
+            "usage": get_usage("transactions", "pending"),
             "action": partial(print, "pending")
         },
         "past": {
             "description": "List past transactions.",
-            "usage": f"[{styles['category_title_style']}]transactions[/] [{styles['category_subtitle_style']}]past[/] <year>",
+            "usage": get_usage("transactions", "past", "<year>"),
             "action": partial(print, "past")
+        }
+    },
+    "setup": {
+        "primary": {
+            "description": "Database creation, requires root mysql accout.",
+            "usage": get_usage("setup", "primary"),
+            "action": primary
+        },
+        "secondary": {
+            "description": "Table creation.",
+            "usage": get_usage("setup", "secondary"),
+            "action": secondary
+        },
+        "optional": {
+            "description": "Populate database with dummy values.",
+            "usage": get_usage("setup", "optional"),
+            "action": optional
         }
     }
 }
 
 
 class App:
-    def __init__(self, name: str, description: str, categories: categories_t, console: Console):
+    def __init__(self, name: str, description: str, categories: categories_t):
         self.name = name
         self.description = description
         self.categories = categories
@@ -82,8 +138,8 @@ class App:
                     self.max_category_length = len(j)
 
     @staticmethod
-    def get_default(console: Console) -> "App":
-        return App(app_name, app_description, app_categories, console)
+    def get_default() -> "App":
+        return App(app_name, app_description, app_categories)
 
     def print_help(self):
         self.console.print(f"[{styles['app_title_style']}]Name: [/][{styles['app_body_style']}]{self.name}")

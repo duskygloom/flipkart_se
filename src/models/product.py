@@ -1,23 +1,26 @@
 class Product:
-    title: str
-    cost_price: float
-    sell_price: float
+    product_id: int
+    name: str
+    keywords: list[str]
+    description: str
+    price: float
     discount: float
-    tax_percent: float = 0.16
 
-    def __init__(self, title: str, cost_price: float, sell_price: float,
-                 discount: float) -> None:
-        self.title = title
-        self.cost_price = cost_price
-        self.sell_price = sell_price
+    def __init__(self, product_id: int, name: str, keywords: str, description: str, price: float, discount: float):
+        self.product_id = product_id
+        self.name = name
+        self.keywords = keywords.split(',')
+        self.description = description
+        self.price = price
         self.discount = discount
 
-    def get_tax_amount(self) -> float:
-        return (self.sell_price - self.discount) * self.tax_percent
+    @staticmethod
+    def from_tuple(row: tuple) -> "Product":
+        if len(row) < 6:
+            return None
+        return Product(row[0], row[1], row[2], row[3], row[4], row[5])
 
-    def get_total_amount(self) -> float:
-        return (self.sell_price - self.discount) * (1 + self.tax_percent)
 
 __all__ = [
-    Product
+    "Product"
 ]

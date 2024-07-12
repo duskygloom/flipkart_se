@@ -1,14 +1,21 @@
 import os
 import json
 
-from typing import Literal, Dict
+from typing import TypedDict
 
 config_file = "config.json"
 config_encoding = "utf-8"
 
-subconfig_t = Literal["screen_width", "results_per_page"]
-
-config_t = Dict[subconfig_t, str]
+class config_t(TypedDict):
+    root_username: str
+    root_password: str
+    screen_width: int
+    result_per_page: int
+    mysql_username: str
+    mysql_password: str
+    mysql_hostname: str
+    mysql_database: str
+    current_user: str
 
 
 def get_config() -> config_t:

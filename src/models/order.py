@@ -5,85 +5,52 @@ from rich.table import Table
 
 from utils.currency import get_currency_string
 
-from models.buyer import Buyer
-from models.seller import Seller
-from models.product import Product
-
-shipment_charge = 40
-shipment_charge_exemption_price = 500
+from models.user import *
+from models.product import *
 
 
 class Order:
-    id: str
-    date: datetime
     buyer: Buyer
+    bought_time: str
     seller: Seller
-    product_qty: dict[Product, int]
+    products: list[Product]
 
-    def __init__(self, id: str, date: datetime, buyer: Buyer, seller: Seller,
-                 product_qty: dict[Product, int] = {}) -> None:
-        self.id = id
-        self.date = date
+    def __init__(self, buyer: Buyer, bought_time: str, seller: Seller, products: list[Product]):
         self.buyer = buyer
+        self.bought_time = str
         self.seller = seller
-        self.product_qty = product_qty
-
-    def add_product_qty(self, product: Product, qty: int = 1) -> None:
-        if product in self.product_qty:
-            self.product_qty[product] += qty
-        else:
-            self.product_qty[product] = qty
-
-    def get_gross_amount(self) -> float:
-        '''
-        Returns
-        -------
-        Cost of all the products in the order but does not include shipment
-        charge.
-        '''
-        total = 0
-        for product in self.product_qty:
-            total += product.get_total_amount() * self.product_qty[product]
-        return total
-
-    def get_shipment_charge(self) -> float:
-        if self.get_gross_amount() < shipment_charge_exemption_price:
-            return shipment_charge
-        return 0
+        self.products = products
 
     def get_total_amount(self) -> float:
         '''
         Returns
         -------
-        Cost of all the products in the order and also includes shipment
-        charge.
+        Cost of all the products in the order.
         '''
-        return self.get_gross_amount() + self.get_shipment_charge()
+        total_amount = 0
+        for product in self.products:
+            total_amount += product.price - product.discount
+        return total_amount
 
     def get_products_table(self) -> Table:
         table = Table(box=SQUARE, show_lines=True)
-        table.add_column("Title")
-        table.add_column("Qty", justify="right")
-        table.add_column("Amount", justify="right")
+        table.add_column("Name")
+        table.add_column("Price", justify="right")
         table.add_column("Discount", justify="right")
-        table.add_column("Tax", justify="right")
         table.add_column("Total", justify="right")
         for product in self.product_qty:
             qty = self.product_qty[product]
             table.add_row(
-                product.title,
-                str(qty),
-                get_currency_string(product.sell_price*qty),
-                get_currency_string(product.discount*qty),
-                get_currency_string(product.get_tax_amount()*qty),
-                get_currency_string(product.get_total_amount()*qty)
+                product.name,
+                get_currency_string(product.price),
+                get_currency_string(product.discount),
+                get_currency_string(product.get_total_amount())
             )
-        shipmentstr = get_currency_string(self.get_shipment_charge())
-        table.add_row("Shipment", "", "", "", shipmentstr)
-        totalstr = get_currency_string(self.get_total_amount())
-        table.add_row("Grand total", "", "", "", "", totalstr, style="bold")
+        total_amount_str = get_currency_string(self.get_total_amount())
+        table.add_row("Total amount", "", "", "", "", total_amount_str, style="bold")
         return table
 
+
 __all__ = [
-    Order
+    "Order"
 ]

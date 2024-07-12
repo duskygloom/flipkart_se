@@ -2,6 +2,10 @@
 
 curdir=`pwd`
 
+echo "Installing requirements..."
+pip3 install -r requirements.txt
+
+echo "Writing script..."
 echo "#!/usr/bin/env bash
 prevdir=\`pwd\`
 appdir='$curdir'

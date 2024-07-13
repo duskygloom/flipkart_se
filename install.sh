@@ -19,5 +19,4 @@ cd \$appdir/src
 cd \$prevdir" > ./flipkart
 
 chmod +x ./flipkart
-echo
 echo -e "\nDone."

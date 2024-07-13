@@ -28,11 +28,7 @@ class Invoice:
 
     def print(self):
         styles = get_styles()
-        console.print(f"[{styles['app_title']}]Seller:[/] {self.order.seller.name}")
-        seller_address = self.order.seller.address
-        console.print(f"[{styles['app_title']}]Seller address:[/] {seller_address}")
-        console.print()
-        console.print(f"[{styles['app_title']}]Order time:[/] {get_current_strftime()}")
+        console.print(f"[{styles['app_title']}]Time:[/] {self.order.bought_time}")
         console.print(f"[{styles['app_title']}]Buyer:[/] {self.order.buyer.name}")
         buyer_address = self.order.buyer.address
         console.print(f"[{styles['app_title']}]Buyer address:[/] {buyer_address}")

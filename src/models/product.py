@@ -11,6 +11,7 @@ class Product:
     description: str
     price: float
     discount: float
+    seller: User
 
     def __init__(self, product_id: int, name: str, keywords: str, description: str, price: float, discount: float):
         self.product_id = product_id
@@ -43,7 +44,7 @@ class Product:
         query += f"('{self.name}', '{','.join(self.keywords)}', '{self.description}', {self.price}, {self.discount})"
         return query
     
-    def get_product_transaction_query(self, seller: Seller) -> str:
+    def get_product_transaction_query(self, seller: User) -> str:
         '''
         Description
         -----------

@@ -25,10 +25,10 @@ def get_usage(category: str, subcategory: str, args: str = "") -> str:
 
 app_categories: categories_t = {
     "product": {
-        "buy": {
-            "description": "Buy a product.",
-            "usage": get_usage("product", "buy", "<product_id>"),
-            "action": Actions.product_buy
+        "add": {
+            "description": "Add a product to cart.",
+            "usage": get_usage("product", "add", "(product_id)"),
+            "action": Actions.product_add
         },
         "sell": {
             "description": "Sell a product.",
@@ -37,7 +37,7 @@ app_categories: categories_t = {
         },
         "search": {
             "description": "Search for a product.",
-            "usage": get_usage("product", "search", "<query>"),
+            "usage": get_usage("product", "search", "(query)"),
             "action": Actions.product_search
         }
     },
@@ -54,7 +54,7 @@ app_categories: categories_t = {
         },
         "login": {
             "description": "Log into your account.",
-            "usage": get_usage("account", "login", "<username>"),
+            "usage": get_usage("account", "login", "(username)"),
             "action": Actions.account_login
         },
         "logout": {
@@ -62,32 +62,27 @@ app_categories: categories_t = {
             "usage": get_usage("account", "logout"),
             "action": Actions.account_logout
         },
-        "change_address": {
-            "description": "Change your address.",
-            "usage": get_usage("action", "change_address"),
-            "action": Actions.account_change_address
-        },
-        "change_contact": {
-            "description": "Change your contact.",
-            "usage": get_usage("action", "change_contact"),
-            "action": Actions.account_change_contact
-        },
-        "change_password": {
-            "description": "Change your password.",
-            "usage": get_usage("action", "change_contact"),
-            "action": Actions.account_change_password
+        "update": {
+            "description": "Update your account details.",
+            "usage": get_usage("action", "update", "(address|contact|password)"),
+            "action": Actions.account_update
         }
     },
-    "transactions": {
+    "transaction": {
         "pending": {
             "description": "List pending transactions.",
-            "usage": get_usage("transactions", "pending"),
-            "action": partial(print, "pending")
+            "usage": get_usage("transaction", "pending"),
+            "action": Actions.transaction_pending
         },
-        "past": {
-            "description": "List past transactions.",
-            "usage": get_usage("transactions", "past", "<year>"),
-            "action": partial(print, "past")
+        "complete": {
+            "description": "Complete pending transactions.",
+            "usage": get_usage("transaction", "complete"),
+            "action": Actions.transaction_complete
+        },
+        "history": {
+            "description": "List history.",
+            "usage": get_usage("transaction", "history", "(bought|sold)"),
+            "action": Actions.transaction_history
         }
     },
     "setup": {

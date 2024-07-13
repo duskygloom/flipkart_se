@@ -1,3 +1,6 @@
+from utils.sql import *
+
+
 class User:
     name: str
     address: str
@@ -13,16 +16,19 @@ class User:
             return None
         return User(row[0], row[1], row[2])
 
-
-class Buyer(User):
-    ...
-
-
-class Seller(User):
-    ...
+    @staticmethod
+    def from_name(name: str) -> "User":
+        '''
+        Returns
+        -------
+        Returns user corresponding to name.
+        Returns None if no user found.
+        '''
+        sql = SQL.get_default()
+        sql.execute(f"select username, address, contact from accounts where username = '{name}'")
+        return User.from_tuple(sql.fetchone())
 
 
 _all__ = [
-    "Buyer",
-    "Seller"
+    "User"
 ]

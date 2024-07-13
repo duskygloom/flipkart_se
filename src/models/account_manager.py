@@ -65,7 +65,7 @@ class AccountManager:
         Changes address for a user and returns status.
         '''
         sql = SQL.get_default()
-        return sql.execute(f"update accounts set address = '{address}' where username = '{username}' and password = '{password}'", commit=True)
+        return sql.execute(f"update accounts set address = '{address}' where username = '{username}'", commit=True)
     
     @staticmethod
     def change_contact(username: str, password: str, contact: str) -> bool:
@@ -75,7 +75,7 @@ class AccountManager:
         Changes contact for a user and returns status.
         '''
         sql = SQL.get_default()
-        return sql.execute(f"update accounts set contact = '{contact}' where username = '{username}' and password = '{password}'", commit=True)
+        return sql.execute(f"update accounts set contact = '{contact}' where username = '{username}'", commit=True)
     
     @staticmethod
     def change_password(username: str, newpassword: str) -> bool:

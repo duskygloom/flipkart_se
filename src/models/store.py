@@ -25,7 +25,7 @@ from models.account_manager import *
 
 def get_result_table(products: list[Product]) -> Table:
     styles = get_styles()
-    table = Table("ID", "Name", "Description", "Price", "Selling at", caption="Results", box=SQUARE, header_style=styles['app_title'])
+    table = Table("ID", "Name", "Description", "Price", "Special price", caption="Results", box=SQUARE, header_style=styles['app_title'])
     for product in products:
         table.add_row(str(product.product_id), product.name, product.description, get_currency_string(product.price), get_currency_string(product.price-product.discount))
     return table

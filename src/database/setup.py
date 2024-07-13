@@ -54,42 +54,39 @@ def primary_setup() -> bool:
     root_password = config['root_username']
     if not root_password:
         root_password = Prompt.ask("MySQL root password", password=True)
+    user_hostname = config['mysql_hostname']
+    if not user_hostname:
+        user_hostname = Prompt.ask("MySQL hostname")
     # connect to root
     sql = SQL(root_username, root_password, config['mysql_hostname'], root_database)
     if not sql:
         return False
-    # check if mysql database exists
+    # finding suffix
     if not sql.execute("select user from user"):
         logger.error("Could not find user table in mysql database.")
         return False
-    # create new database
+    all_users = sql.fetchall()
     sql.execute("show databases")
     all_databases = sql.fetchall()
     suffix = 1
     database_name = user_database
-    while ((database_name,) in all_databases):
+    while ((database_name,) in all_databases or (account_name,) in all_users):
+        account_name = f"{user_account}_{suffix}"
         database_name = f"{user_database}_{suffix}"
         suffix += 1
+    # create database
     if not sql.execute(f"create database {database_name}", commit=True):
         return False
-    # create new account
-    all_users = sql.fetchall()
-    suffix = 1
-    account_name = user_account
-    while ((account_name,) in all_users):
-        account_name = f"{user_account}_{suffix}"
-        suffix += 1
-    user_hostname = config['mysql_hostname']
-    if not user_hostname:
-        user_hostname = Prompt.ask("MySQL hostname")
-    sql.execute(f"create user '{account_name}'@'{user_hostname}' identified by '{user_password}'", commit=True)
+    # create account
+    if not sql.execute(f"create user '{account_name}'@'{user_hostname}' identified by '{user_password}'", commit=True):
+        return False
+    # permissions
+    if not sql.execute(f"grant all on {database_name}.* to '{account_name}'@'{user_hostname}'", commit=True):
+        return False
+    # saving config
     config['mysql_username'] = account_name
     config['mysql_password'] = user_password
     config['mysql_hostname'] = user_hostname
-    save_config(config)
-    # permissions
-    if not sql.execute(f"grant all on {config['mysql_database']}.* to '{config['mysql_username']}'@'{config['mysql_hostname']}'", commit=True):
-        return False
     config['mysql_database'] = database_name
     save_config(config)
     return True

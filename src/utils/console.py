@@ -1,7 +1,7 @@
 import logging
 
-from rich.console import RichConsole
 from rich.logging import RichHandler
+from rich.console import Console as RichConsole
 
 from utils.config import *
 from utils.styles import *

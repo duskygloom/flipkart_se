@@ -36,7 +36,7 @@ def get_result_table(products: list[Product]) -> Table:
     # return Panel(panel_text, box=SQUARE, title=f"[{styles['highlight']}]Results[/]")
     table = Table("ID", "Name", "Description", "Price", "Discount", caption="Results", box=SQUARE)
     for product in products:
-        table.add_row(product.product_id, product.name, product.description, get_currency_string(product.price), get_currency_string(product.discount))
+        table.add_row(str(product.product_id), product.name, product.description, get_currency_string(product.price), get_currency_string(product.discount))
     return table
 
 class Store:

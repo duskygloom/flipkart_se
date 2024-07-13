@@ -25,15 +25,15 @@ class Product:
             return None
         return Product(row[0], row[1], row[2], row[3], row[4], row[5])
     
-    def get_product_sell_query(self, seller: Seller) -> str:
+    def get_product_sell_query(self) -> str:
         '''
         Description
         -----------
         Returns the query to be ran in the products table
         when a new product is added by a seller.
         '''
-        query = "insert into products (seller_name, keywords, description, price, discount) values "
-        query += f"('{seller.name}', '{','.join(self.keywords)}', '{self.description}', {self.price}, {self.discount})"
+        query = "insert into products (keywords, description, price, discount) values "
+        query += f"('{','.join(self.keywords)}', '{self.description}', {self.price}, {self.discount})"
         return query
     
     def get_product_transaction_query(self, seller: Seller) -> str:

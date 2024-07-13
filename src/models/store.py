@@ -96,7 +96,7 @@ class Store:
         # product id does not matter now, it will be assigned by database
         product = Product(-1, name, keywords, description, float(price), float(discount))
         # add product to products table
-        product_query = product.get_product_sell_query(seller)
+        product_query = product.get_product_sell_query()
         if not self.sql.execute(product_query):
             console.print_error("Could not add product to database.")
             self.sql.rollback()

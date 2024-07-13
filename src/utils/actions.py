@@ -108,7 +108,7 @@ class Actions:
             repeat = new_password == repeat_password
         styles = get_styles()
         if AccountManager.change_password(user.name, new_password):
-            console.print(f"Password changed for [{styles['highlight']}]user.name[/].")
+            console.print(f"Password changed for [{styles['highlight']}]{user.name}[/].")
         else:
             console.print_error("Failed to change password.")
 

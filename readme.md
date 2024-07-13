@@ -24,7 +24,7 @@ In case git is not installed, download the zip from the [**github**](https://git
 
 Go into the project directory and create a virtual environment by using venv.
 ```batch
-cd flipkart
+cd flipkart_se
 python -m venv .
 ```
 

@@ -62,6 +62,16 @@ def primary_setup() -> bool:
     if not sql.execute("select user from user"):
         logger.error("Could not find user table in mysql database.")
         return False
+    # create new database
+    sql.execute("show databases")
+    all_databases = sql.fetchall()
+    suffix = 1
+    database_name = user_database
+    while ((database_name,) in all_databases):
+        database_name = f"{user_database}_{suffix}"
+        suffix += 1
+    if not sql.execute(f"create database {database_name}", commit=True):
+        return False
     # create new account
     all_users = sql.fetchall()
     suffix = 1
@@ -77,16 +87,6 @@ def primary_setup() -> bool:
     config['mysql_password'] = user_password
     config['mysql_hostname'] = user_hostname
     save_config(config)
-    # create new database
-    sql.execute("show databases")
-    all_databases = sql.fetchall()
-    suffix = 1
-    database_name = user_database
-    while ((database_name,) in all_databases):
-        database_name = f"{user_database}_{suffix}"
-        suffix += 1
-    if not sql.execute(f"create database {database_name}", commit=True):
-        return False
     # permissions
     if not sql.execute(f"grant all on {config['mysql_database']}.* to '{config['mysql_username']}'@'{config['mysql_hostname']}'", commit=True):
         return False

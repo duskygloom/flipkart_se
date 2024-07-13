@@ -7,7 +7,7 @@ $appdir/bin/pip install -r requirements.txt
 
 echo -e "\nDatabase setup..."
 cd src
-$appdir/dir/python cli.py setup required
+$appdir/bin/python cli.py setup required
 cd $appdir
 
 echo -e "\nWriting script..."

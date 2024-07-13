@@ -3,9 +3,9 @@
 	"root_password": "",
 	"screen_width": 100,
 	"result_per_page": 5,
-	"mysql_username": "",
-	"mysql_password": "",
-	"mysql_hostname": "",
-	"mysql_database": "",
+	"mysql_username": "flipkart_org",
+	"mysql_password": "flipkart_org",
+	"mysql_hostname": "localhost",
+	"mysql_database": "flipkart",
 	"current_user": ""
 }

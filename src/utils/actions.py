@@ -105,7 +105,7 @@ class Actions:
         while repeat:
             new_password = Prompt.ask("New password", password=True)
             repeat_password = Prompt.ask("Repeat password", password=True)
-            repeat = new_password == repeat_password
+            repeat = (new_password == repeat_password)
         styles = get_styles()
         if AccountManager.change_password(user.name, new_password):
             console.print(f"Password changed for [{styles['highlight']}]{user.name}[/].")

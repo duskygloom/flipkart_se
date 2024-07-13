@@ -14,10 +14,7 @@ class Product:
     def __init__(self, product_id: int, name: str, keywords: str, description: str, price: float, discount: float):
         self.product_id = product_id
         self.name = name
-        self.keywords = []
-        for phrase in keywords.split(', '):
-            for word in phrase.split(','):
-                self.keywords.append(word)
+        self.keywords = [word.strip() for word in keywords.split(',')]
         self.description = description
         self.price = price
         self.discount = discount
@@ -36,7 +33,7 @@ class Product:
         when a new product is added by a seller.
         '''
         query = "insert into products (seller_name, keywords, description, price, discount) values "
-        query += f"('{seller.name}', '{self.keywords}', '{self.description}', {self.price}, {self.discount})"
+        query += f"('{seller.name}', '{','.join(self.keywords)}', '{self.description}', {self.price}, {self.discount})"
         return query
     
     def get_product_transaction_query(self, seller: Seller) -> str:

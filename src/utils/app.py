@@ -2,19 +2,12 @@ from typing import Dict, Literal
 
 from rich.box import SQUARE
 from rich.panel import Panel
-from rich.prompt import Prompt
 
 from functools import partial
 
 from utils.styles import *
+from utils.actions import *
 from utils.console import *
-
-from models.store import *
-from models.account_manager import *
-
-from database.setup import *
-
-styles = get_styles()
 
 categories_metadata_t = Literal["description", "usage", "action"]
 
@@ -25,88 +18,9 @@ app_name = "Flipkart"
 app_description = "Command line interface for dummy flipkart."
 
 
-def buy(*args):
-    if len(args) <= 0:
-        logger.error("Product ID has not been specified.")
-        return
-    product_id = args[0]
-    store = Store()
-    invoice = store.buy(product_id)
-    console.print(invoice)
-
-
-def sell(*args):
-    store = Store()
-    if store.sell():
-        console.print("Product added successfully.")
-    else:
-        console.print("Product could not be added.")
-
-
-def search(*args):
-    if len(args) <= 0:
-        logger.error("No query has been searched.")
-        return
-    query = " ".join(args)
-    store = Store()
-    results = store.search(query)
-    try:
-        console.print(next(results))
-    except StopIteration:
-        ...
-
-
-def create(*args):
-    username = Prompt.ask("Username")
-    while AccountManager.user_exists(username):
-        console.print(f"User [{styles['highlight']}]{username}[/] already exists.")
-        username = Prompt.ask("Username")
-    password = Prompt.ask("Password", password=True)
-    AccountManager.create_user(username, password)
-
-
-def login(*args):
-    username = Prompt.ask("Username")
-    password = Prompt.ask("Password", password=True)
-    if AccountManager.login(username, password):
-        console.print(f"Logged in as [{styles['highlight']}]{username}[/]")
-    else:
-        console.print(f"Could not log in as [{styles['highlight']}]{username}[/]")
-
-
-def logout(*args):
-    user = AccountManager.logged_user()
-    if AccountManager.logout() and user:
-        console.print(f"Logged out of [{styles['highlight']}]{user.name}[/]")
-    elif user:
-        console.print(f"Could not log out of [{styles['highlight']}]{user.name}[/]")
-    else:
-        console.print(f"No account was logged in.")
-
-
-def primary(*args):
-    if primary_setup():
-        logger.info("Primary setup successful.")
-    else:
-        logger.error("Primary setup unsuccessful.")
-
-
-def secondary(*args):
-    if secondary_setup():
-        logger.info("Secondary setup successful.")
-    else:
-        logger.error("Secondary setup unsuccessful.")
-
-
-def optional(*args):
-    if optional_setup():
-        logger.info("Optional setup successful.")
-    else:
-        logger.error("Optional setup unsuccessful.")
-
-
 def get_usage(category: str, subcategory: str, args: str = "") -> str:
-    return f"[{styles['category_title_style']}]{category}[/] [{styles['category_subtitle_style']}]{subcategory}[/] {args}"
+    styles = get_styles()
+    return f"[{styles['category_title']}]{category}[/] [{styles['category_subtitle']}]{subcategory}[/] {args}"
 
 
 app_categories: categories_t = {
@@ -114,34 +28,49 @@ app_categories: categories_t = {
         "buy": {
             "description": "Buy a product.",
             "usage": get_usage("product", "buy", "<product_id>"),
-            "action": buy
+            "action": Actions.product_buy
         },
         "sell": {
             "description": "Sell a product.",
             "usage": get_usage("product", "sell"),
-            "action": sell
+            "action": Actions.product_sell
         },
         "search": {
             "description": "Search for a product.",
             "usage": get_usage("product", "search", "<query>"),
-            "action": search
+            "action": Actions.product_search
         }
     },
     "account": {
         "create": {
             "description": "Create a new account.",
             "usage": get_usage("account", "create"),
-            "action": create
+            "action": Actions.account_create
+        },
+        "details": {
+            "description": "See your account details.",
+            "usage": get_usage("account", "details"),
+            "action": Actions.account_details
+        },
+        "change_address": {
+            "description": "Change your address.",
+            "usage": get_usage("action", "change_address"),
+            "action": Actions.account_change_address
+        },
+        "change_contact": {
+            "description": "Change your contact.",
+            "usage": get_usage("action", "change_contact"),
+            "action": Actions.account_change_contact
         },
         "login": {
             "description": "Log into your account.",
-            "usage": get_usage("account", "login"),
-            "action": login
+            "usage": get_usage("account", "login", "<username>"),
+            "action": Actions.account_login
         },
         "logout": {
             "description": "Log out of your account.",
             "usage": get_usage("account", "logout"),
-            "action": logout
+            "action": Actions.account_logout
         }
     },
     "transactions": {
@@ -157,20 +86,35 @@ app_categories: categories_t = {
         }
     },
     "setup": {
+        "full": {
+            "description": "Primary + secondary + optional setup",
+            "usage": get_usage("setup", "full"),
+            "action": Actions.setup_full
+        },
+        "required": {
+            "description": "Primary + secondary setup",
+            "usage": get_usage("setup", "required"),
+            "action": Actions.setup_required
+        },
         "primary": {
             "description": "Database creation, requires root mysql accout.",
             "usage": get_usage("setup", "primary"),
-            "action": primary
+            "action": Actions.setup_primary
         },
         "secondary": {
             "description": "Table creation.",
             "usage": get_usage("setup", "secondary"),
-            "action": secondary
+            "action": Actions.setup_secondary
         },
         "optional": {
             "description": "Populate database with dummy values.",
             "usage": get_usage("setup", "optional"),
-            "action": optional
+            "action": Actions.setup_optional
+        },
+        "reset_data": {
+            "description": "Reset data.",
+            "usage": get_usage("setup", "reset_data"),
+            "action": Actions.setup_reset_data
         }
     }
 }
@@ -193,20 +137,21 @@ class App:
         return App(app_name, app_description, app_categories)
 
     def print_help(self):
-        self.console.print(f"[{styles['app_title_style']}]Name: [/][{styles['app_body_style']}]{self.name}")
-        self.console.print(f"[{styles['app_title_style']}]Description: [/][{styles['app_body_style']}]{self.description}")
+        styles = get_styles()
+        self.console.print(f"[{styles['app_title']}]Name: [/][{styles['app_body']}]{self.name}")
+        self.console.print(f"[{styles['app_title']}]Description: [/][{styles['app_body']}]{self.description}")
         self.console.print()
-        self.console.print(f"[{styles['app_title_style']}]Categories:")
+        self.console.print(f"[{styles['app_title']}]Categories:")
         for category in self.categories:
             content = ""
             for subcategory in self.categories[category]:
-                content += f"[{styles['category_subtitle_style']}]{subcategory}[/]"
+                content += f"[{styles['category_subtitle']}]{subcategory}[/]"
                 content += f"{' ' * (self.max_category_length - len(subcategory) + 2)}"
                 content += f"{self.categories[category][subcategory]['description']}\n"
                 content += f"{' ' * (self.max_category_length + 2)}{self.categories[category][subcategory]['usage']}\n"
             if len(content) > 0:
                 content = content.rstrip('\n')
-            panel = Panel(content, title=f"[{styles['category_title_style']}]{category}[/]", box=SQUARE, title_align="center")
+            panel = Panel(content, title=f"[{styles['category_title']}]{category}[/]", box=SQUARE, title_align="center")
             self.console.print(panel)
 
     def parse_args(self, args: list[str]) -> bool:

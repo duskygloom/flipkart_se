@@ -2,7 +2,6 @@ from enum import Enum
 
 from models.order import Order
 from models.invoice import Invoice
-from models.product import Product
 
 
 class PaymentMode(Enum):

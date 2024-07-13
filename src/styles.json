@@ -1,11 +1,9 @@
 {
-    "app_title_style": "bold yellow",
-    "app_body_style": "white",
-    "category_title_style": "bold blue",
-    "category_subtitle_style": "yellow",
-    "warning_title_style": "bold yellow",
-    "warning_body_style": "bold yellow",
-    "error_title_style": "bold red",
-    "error_body_style": "bold red",
+    "app_title": "bold yellow",
+    "app_body": "white",
+    "category_title": "bold blue",
+    "category_subtitle": "yellow",
+    "warning": "bold yellow",
+    "error": "bold red",
     "highlight": "bold blue"
 }

@@ -4,12 +4,12 @@ from mysql.connector.abstracts import MySQLCursorAbstract, MySQLConnectionAbstra
 from utils.config import *
 from utils.console import *
 
-config = get_config()
-
 
 class SQL:
     cursor: MySQLCursorAbstract
     connection: MySQLConnectionAbstract
+
+    history: str = "database/history.sql"
 
     def __init__(self, username: str, password: str, hostname: str = "localhost", database: str = "") -> MySQLConnectionAbstract:
         '''
@@ -68,6 +68,8 @@ class SQL:
         '''
         try:
             self.cursor.execute(query)
+            with open(self.history, "a") as fp:
+                fp.write(query + ";\n")
             if commit:
                 self.connection.commit()
         except Exception as e:
@@ -79,6 +81,11 @@ class SQL:
         if not self.connection:
             return
         self.connection.commit()
+
+    def rollback(self):
+        if not self.connection:
+            return
+        self.connection.rollback()
     
     def fetchone(self) -> tuple:
         if not self.cursor:
@@ -97,6 +104,7 @@ class SQL:
     
     @staticmethod
     def get_default() -> "SQL":
+        config = get_config()
         return SQL(config['mysql_username'], config['mysql_password'], config['mysql_hostname'], config['mysql_database'])
 
 

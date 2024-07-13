@@ -1,16 +1,36 @@
 from utils.sql import *
 from utils.config import *
-from utils.styles import *
 from utils.console import *
 
 from rich.prompt import Prompt
 
-config = get_config()
-styles = get_styles()
-
 user_account = "flipkart_org"
 user_password = "flipkart_org"
 user_database = "flipkart"
+
+
+def get_queries(filepath: str) -> list[str]:
+    '''
+    Description
+    -----------
+    Get each query from file and returns a list of
+    all the queries.
+    '''
+    queries = []
+    with open(filepath) as sqlfile:
+        query = ""
+        line = sqlfile.readline()
+        while line != "":
+            line = line.strip()
+            if line.startswith("--") or line == "":
+                line = sqlfile.readline()
+                continue
+            query += " " + line
+            if line.endswith(";"):
+                queries.append(query)
+                query = ""
+            line = sqlfile.readline()
+    return queries
 
 
 def primary_setup() -> bool:
@@ -24,6 +44,7 @@ def primary_setup() -> bool:
     -------
     Returns True if setup successful, else returns False.
     '''
+    config = get_config()
     # get root data
     root_database = "mysql"
     logger.warning("Root mysql account will be used for setup. It is a one time thing.")
@@ -88,39 +109,11 @@ def secondary_setup() -> bool:
     sql = SQL.get_default()
     if not sql:
         return False
-    # products table
-    query = '''create table products (
-        product_id int PRIMARY KEY AUTO_INCREMENT,
-        name varchar(50),
-        keywords varchar(1000),
-        description varchar(1000),
-        price decimal(10, 2),
-        discount decimal(10, 2)
-    )'''
-    # accounts table
-    if not sql.execute(query, commit=True):
-        return False
-    query = '''create table accounts (
-        username varchar(50) PRIMARY KEY,
-        password varchar(50),
-        address varchar(200)
-    )'''
-    if not sql.execute(query, commit=True):
-        return False
-    # transactions table
-    query = '''create table transactions (
-        product_id int PRIMARY KEY,
-        seller_name varchar(50),
-        sold_time datetime,
-        buyer_name varchar(50),
-        bought_time datetime,
-        bought_price decimal(10, 2),
-        foreign key (product_id) references products(product_id),
-        foreign key (seller_name) references accounts(username),
-        foreign key (buyer_name) references accounts(username)
-    )'''
-    if not sql.execute(query, commit=True):
-        return False
+    queries = get_queries("database/secondary_setup.sql")
+    for query in queries:
+        if not sql.execute(query):
+            return False
+    sql.commit()
     return True
 
 
@@ -137,27 +130,42 @@ def optional_setup() -> bool:
     sql = SQL.get_default()
     if not sql:
         return False
-    queries = []
-    with open("database/optional_setup.sql") as sqlfile:
-        query = ""
-        line = sqlfile.readline().strip()
-        while line != "":
-            if line.startswith("--") or line == "":
-                line = sqlfile.readline()
-                continue
-            elif line.endswith(";"):
-                query += " " + line
-                queries.append(query)
-                console.print(query)
-            else:
-                query += " " + line
-            line = sqlfile.readline()
+    queries = get_queries("database/optional_setup.sql")
+    for query in queries:
+        if not sql.execute(query):
+            sql.rollback()
+            return False
+    sql.commit()
     return True
 
+
+def reset_data(table: str = "") -> bool:
+    sql = SQL.get_default()
+    if not sql:
+        return False
+    sql.execute("show tables")
+    all_tables = sql.fetchall()
+    if table and (table,) in all_tables:
+        if not sql.execute(f"delete from {table[0]}"):
+            sql.rollback()
+            return False
+    elif not table:
+        if not sql.execute(f"delete from transactions"):
+            sql.rollback()
+            return False
+        if not sql.execute(f"delete from accounts"):
+            sql.rollback()
+            return False
+        if not sql.execute(f"delete from products"):
+            sql.rollback()
+            return False
+    sql.commit()
+    return True
 
 
 __all__ = [
     "primary_setup",
     "secondary_setup",
-    "optional_setup"
+    "optional_setup",
+    "reset_data"
 ]

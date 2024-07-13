@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 
-curdir=`pwd`
+appdir=`pwd`
 
 echo "Installing requirements..."
-$curdir/bin/pip install -r requirements.txt
+$appdir/bin/pip install -r requirements.txt
 
-echo "Writing script..."
+echo -e "\nDatabase setup..."
+cd src
+$appdir/dir/python cli.py setup required
+cd $appdir
+
+echo -e "\nWriting script..."
 echo "#!/usr/bin/env bash
 prevdir=\`pwd\`
-appdir='$curdir'
+appdir='$appdir'
 cd \$appdir/src
 \$appdir/bin/python cli.py \$@
 cd \$prevdir" > ./flipkart
 
 chmod +x ./flipkart
+echo
+echo -e "\nDone."

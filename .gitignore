@@ -22,3 +22,7 @@ test.*
 # system specific scripts
 flipkart.bat
 flipkart
+
+# query history
+src/database/history.sql
+

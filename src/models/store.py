@@ -5,12 +5,16 @@ storing products from and into databases.
 
 from typing import Generator
 
+from rich.box import SQUARE
+from rich.panel import Panel
 from rich.prompt import Prompt
 
 from utils.sql import *
 from utils.time import *
 from utils.config import *
+from utils.styles import *
 from utils.console import *
+from utils.currency import *
 
 from models.user import *
 from models.order import *
@@ -18,23 +22,34 @@ from models.product import *
 from models.invoice import *
 from models.account_manager import *
 
-config = get_config()
 
+def get_result_panel(products: list[Product]) -> Panel:
+    panel_text = ""
+    styles = get_styles()
+    for product in products:
+        panel_text += f"[{styles['app_title']}]ID[/]{11*' '}[{styles['app_body']}]{product.product_id}[/]\n"
+        panel_text += f"[{styles['app_title']}]Name[/]{9*' '}[{styles['app_body']}]{product.name}[/]\n"
+        panel_text += f"[{styles['app_title']}]Description[/]{2*' '}[{styles['app_body']}]{product.description}[/]\n"
+        panel_text += f"[{styles['app_title']}]Price[/]{8*' '}[{styles['app_body']}]{get_currency_string(product.price)}[/]\n"
+        panel_text += f"[{styles['app_title']}]Discount[/]{6*' '}[{styles['app_body']}]{get_currency_string(product.discount)}[/]\n"
+    panel_text = panel_text.rstrip()
+    return Panel(panel_text, box=SQUARE, title=f"[{styles['highlight']}]")
 
 class Store:
     sql: SQL
+    config = get_config()
 
     def __init__(self):
         self.sql = SQL.get_default()
 
-    def search(self, query: str) -> Generator[list[Product], None, None]:
-        self.sql.execute(f"select * from products natural join transactions where buyer_name = NULL and (keywords like '{query}' or keywords like '{query},%' or keywords like '%,{query}' or keywords like '%, {query}' or keywords like '%,{query},%' or keyword like '%, {query},%')")
-        results = self.sql.fetchmany(config['result_per_page'])
-        console.print(results)
-        if len(results) > 0:
-            yield [Product.from_tuple(result) for result in results]
-        else:
-            return
+    def search(self, query: str) -> Generator[Panel | str, None, None]:
+        self.sql.execute(f"select * from products natural join transactions where buyer_name = NULL and (keywords like '{query}' or keywords like '{query},%' or keywords like '%,{query}' or keywords like '%,{query},%')")
+        results = self.sql.fetchmany(self.config['result_per_page'])
+        while len(results) > 0:
+            products = [Product.from_tuple(result) for result in results]
+            results = self.sql.fetchmany(self.config['result_per_page'])
+            yield get_result_panel(products) if len(products) > 0 else ""
+        return "No product found"
 
     def buy(self, product_id: int) -> Invoice:
         # fetch the buyer
@@ -50,13 +65,15 @@ class Store:
             return None
         price = price_tuple[0]
         # update transactions
-        self.sql.execute(f"update transactions set buyer_name = '{config['current_user']}', bought_time = '{get_current_strftime()}', bought_price = {price} where product_id = {product_id}",commit=True)
+        self.sql.execute(f"update transactions set buyer_name = '{self.config['current_user']}', bought_time = '{get_current_strftime()}', bought_price = {price} where product_id = {product_id}")
         # fetch the seller
-        self.sql.execute(f"select username, address from accounts natural join transactions where product_id = '{product_id}")
+        self.sql.execute(f"select username, address, contact from accounts natural join transactions where product_id = '{product_id}")
         seller = Seller.from_tuple(self.sql.fetchone())
         if not seller:
             console.print("Could not find the seller.")
-            return False
+            self.sql.rollback()
+            return None
+        self.sql.commit()
         return Invoice(Order(buyer, get_current_strftime(), seller))
 
     def sell(self) -> bool:
@@ -80,8 +97,9 @@ class Store:
         product = Product(-1, name, keywords, description, float(price), float(discount))
         # add product to products table
         product_query = product.get_product_sell_query(seller)
-        if not self.sql.execute(product_query, commit=True):
+        if not self.sql.execute(product_query):
             logger.error("Could not add product to database.")
+            self.sql.rollback()
             return False
         if not self.sql.execute("select max(product_id) from products"):
             logger.error("Could not fetch the latest product from table.")
@@ -89,9 +107,11 @@ class Store:
         product.product_id = self.sql.fetchone()[0]
         # add product to transactions table
         transaction_query = product.get_product_transaction_query(seller)
-        if not self.sql.execute(transaction_query, commit=True):
+        if not self.sql.execute(transaction_query):
             logger.error("Could not add product to database.")
+            self.sql.rollback()
             return False
+        self.sql.commit()
         return True
 
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from rich.box import SQUARE
 from rich.table import Table
 
-from utils.currency import get_currency_string
+from utils.currency import *
 
 from models.user import *
 from models.product import *

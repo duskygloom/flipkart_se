@@ -10,7 +10,8 @@ create table products (
 create table accounts (
     username varchar(50) PRIMARY KEY,
     password varchar(50),
-    address varchar(200)
+    address varchar(200) default "Not provided",
+    contact varchar(50) default "Not provided"
 );
 
 create table transactions (

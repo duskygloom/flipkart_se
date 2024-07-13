@@ -7,14 +7,12 @@ styles_file = "styles.json"
 styles_encoding = "utf-8"
 
 sub_styles_t = Literal[
-    "app_title_style",
-    "app_body_style",
-    "category_title_style",
-    "category_subtitle_style",
-    "warning_title_style",
-    "warning_body_style",
-    "error_title_style",
-    "error_body_style",
+    "app_title",
+    "app_body",
+    "category_title",
+    "category_subtitle",
+    "warning",
+    "error",
     "highlight"
 ]
 

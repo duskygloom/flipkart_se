@@ -38,6 +38,7 @@ def product_available(product_id: int) -> bool:
     sql.execute(f"select buyer_name from transactions where product_id = {product_id} and isnull(bought_time)")
     return bool(len(sql.fetchone()))
 
+
 class Store:
     sql: SQL
     config: config_t
@@ -47,6 +48,7 @@ class Store:
         self.config = get_config()
 
     def search(self, query: str) -> Table:
+        query = query.lower()
         self.sql.execute(f"select * from products natural join transactions where isnull(bought_time) and (keywords like '%,{query},%' or keywords like '%,{query}' or keywords like '{query},%' or keywords like '{query}')")
         results = self.sql.fetchall()
         products = [Product.from_tuple(result) for result in results]

@@ -52,6 +52,16 @@ app_categories: categories_t = {
             "usage": get_usage("account", "details"),
             "action": Actions.account_details
         },
+        "login": {
+            "description": "Log into your account.",
+            "usage": get_usage("account", "login", "<username>"),
+            "action": Actions.account_login
+        },
+        "logout": {
+            "description": "Log out of your account.",
+            "usage": get_usage("account", "logout"),
+            "action": Actions.account_logout
+        },
         "change_address": {
             "description": "Change your address.",
             "usage": get_usage("action", "change_address"),
@@ -66,16 +76,6 @@ app_categories: categories_t = {
             "description": "Change your password.",
             "usage": get_usage("action", "change_contact"),
             "action": Actions.account_change_password
-        },
-        "login": {
-            "description": "Log into your account.",
-            "usage": get_usage("account", "login", "<username>"),
-            "action": Actions.account_login
-        },
-        "logout": {
-            "description": "Log out of your account.",
-            "usage": get_usage("account", "logout"),
-            "action": Actions.account_logout
         }
     },
     "transactions": {

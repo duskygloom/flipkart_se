@@ -11,8 +11,8 @@ Install mysql from [**mysql.com**](https://dev.mysql.com/downloads/installer/) o
 
 Create a root account in mysql/mariadb with grant privileges (*or use the root account created during installation*) and remember the login credentials. It will be required during the initial setup.
 ```sql
-create user 'newroot'@'localhost' identified by 'password'
-grant all on *.* to 'newroot'@'localhost' with grant option
+create user 'newroot'@'localhost' identified by 'password';
+grant all on *.* to 'newroot'@'localhost' with grant option;
 ```
 
 Clone the project repository from github.
@@ -50,8 +50,8 @@ Install mysql or mariadb from your package manager.
 
 Create a root account in mysql/mariadb with grant option and remember the login credentials. It will be required during the initial setup.
 ```sql
-create user 'newroot'@'localhost' identified by 'password'
-grant all on *.* to 'newroot'@'localhost' with grant option
+create user 'newroot'@'localhost' identified by 'password';
+grant all on *.* to 'newroot'@'localhost' with grant option;
 ```
 
 Clone the project repository from github.

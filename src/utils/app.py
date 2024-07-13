@@ -62,6 +62,11 @@ app_categories: categories_t = {
             "usage": get_usage("action", "change_contact"),
             "action": Actions.account_change_contact
         },
+        "change_password": {
+            "description": "Change your password.",
+            "usage": get_usage("action", "change_contact"),
+            "action": Actions.account_change_password
+        },
         "login": {
             "description": "Log into your account.",
             "usage": get_usage("account", "login", "<username>"),

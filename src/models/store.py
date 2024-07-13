@@ -43,7 +43,7 @@ class Store:
         self.sql = SQL.get_default()
 
     def search(self, query: str) -> Generator[Panel | str, None, None]:
-        self.sql.execute(f"select * from products natural join transactions where buyer_name = NULL and (keywords like '{query}' or keywords like '{query},%' or keywords like '%,{query}' or keywords like '%,{query},%')")
+        self.sql.execute(f"select * from products natural join transactions where isnull(buyer_name) and (keywords like '%,{query},%' or keywords like '%,{query}' or keywords like '{query},%' or keywords like '{query}')")
         results = self.sql.fetchmany(self.config['result_per_page'])
         while len(results) > 0:
             products = [Product.from_tuple(result) for result in results]

@@ -32,7 +32,7 @@ update transactions set buyer_name = "duckbuys@flipkart", sold_time = "...", bou
 
 -- searching a product
 
-select * from products natural join transactions where buyer_name = NULL and 
+select * from products natural join transactions where isnull(buyer_name) and 
 (keywords like "shoes" or keywords like "shoes,%" or keywords like "%,shoes" or keywords like "%,shoes,%");
 
 

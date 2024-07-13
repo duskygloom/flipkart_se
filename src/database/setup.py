@@ -69,6 +69,7 @@ def primary_setup() -> bool:
     sql.execute("show databases")
     all_databases = sql.fetchall()
     suffix = 1
+    account_name = user_account
     database_name = user_database
     while ((database_name,) in all_databases or (account_name,) in all_users):
         account_name = f"{user_account}_{suffix}"

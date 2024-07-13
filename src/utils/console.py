@@ -15,8 +15,8 @@ logger = logging.getLogger("rich")
 
 
 class Console(RichConsole):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, width: int = None):
+        super().__init__(width=width)
 
     def print_error(self, text: str):
         styles = get_styles()

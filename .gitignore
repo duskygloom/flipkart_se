@@ -23,6 +23,7 @@ test.*
 flipkart.bat
 flipkart
 
-# query history
+# user specific
 src/database/history.sql
+src/config.json
 

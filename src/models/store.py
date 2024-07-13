@@ -44,7 +44,6 @@ class Store:
         begin = 0
         while begin < len(results)-1:
             products = [Product.from_tuple(result) for result in results[begin:begin+perpage]]
-            results = self.sql.fetchmany(self.config['result_per_page'])
             begin += perpage
             yield get_result_table(products) if len(products) > 0 else ""
         return

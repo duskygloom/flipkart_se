@@ -103,11 +103,11 @@ class Actions:
             return
         repeat = True
         while repeat:
-            new_password = Prompt.ask("New password", password=True)
-            repeat_password = Prompt.ask("Repeat password", password=True)
-            repeat = (new_password == repeat_password)
+            password = Prompt.ask("New password", password=True)
+            repassword = Prompt.ask("Repeat password", password=True)
+            repeat = (password != repassword)
         styles = get_styles()
-        if AccountManager.change_password(user.name, new_password):
+        if AccountManager.change_password(user.name, password):
             console.print(f"Password changed for [{styles['highlight']}]{user.name}[/].")
         else:
             console.print_error("Failed to change password.")

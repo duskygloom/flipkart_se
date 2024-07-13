@@ -9,6 +9,7 @@ echo Installing requirements...
 echo:
 echo Database setup...
 cd src
+copy empty_config.json config.json
 %appdir%\Scripts\python cli.py setup required
 
 cd %appdir%

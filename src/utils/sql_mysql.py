@@ -1,14 +1,13 @@
-import mariadb as sql
-from mariadb.cursors import Cursor
-from mariadb.connections import Connection
+import mysql.connector as sql
+from mysql.connector.abstracts import MySQLCursorAbstract, MySQLConnectionAbstract
 
 from utils.config import *
 from utils.console import *
 
 
 class SQL:
-    cursor: Cursor
-    connection: Connection
+    cursor: MySQLCursorAbstract
+    connection: MySQLConnectionAbstract
 
     history: str = "database/history.sql"
 

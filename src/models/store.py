@@ -5,6 +5,8 @@ storing products from and into databases.
 
 from typing import Generator
 
+from mysql.connector.errors import InterfaceError
+
 from rich.box import SQUARE
 from rich.table import Table
 from rich.prompt import Prompt
@@ -55,9 +57,10 @@ class Store:
             console.print("Log into your account to buy.")
             return None
         # find the current price
-        self.sql.execute(f"select price-discount from product where product_id = {product_id}")
-        price_tuple = self.sql.fetchone()
-        if len(price_tuple) < 1:
+        self.sql.execute(f"select price - discount from product where product_id = {product_id}")
+        try:
+            price_tuple = self.sql.fetchone()
+        except InterfaceError:
             console.print_error(f"Could not complete transaction for product {product_id}")
             return None
         price = price_tuple[0]

@@ -34,7 +34,8 @@ def get_result_table(products: list[Product]) -> Table:
     #     panel_text += f"[{styles['app_title']}]Discount[/]{5*' '}[{styles['app_body']}]{get_currency_string(product.discount)}[/]\n"
     # panel_text = panel_text.rstrip()
     # return Panel(panel_text, box=SQUARE, title=f"[{styles['highlight']}]Results[/]")
-    table = Table("ID", "Name", "Description", "Price", "Discount", caption="Results", box=SQUARE)
+    styles = get_styles()
+    table = Table("ID", "Name", "Description", "Price", "Discount", caption="Results", box=SQUARE, header_style=styles['app_title'])
     for product in products:
         table.add_row(str(product.product_id), product.name, product.description, get_currency_string(product.price), get_currency_string(product.discount))
     return table

@@ -58,7 +58,7 @@ def primary_setup() -> bool:
     if not user_hostname:
         user_hostname = Prompt.ask("MySQL hostname")
     # connect to root
-    sql = SQL(root_username, root_password, config['mysql_hostname'], root_database)
+    sql = SQL(root_username, root_password, user_hostname, root_database)
     if not sql:
         return False
     # finding suffix

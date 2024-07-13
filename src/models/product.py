@@ -1,5 +1,6 @@
 from models.user import *
 
+from utils.sql import *
 from utils.time import *
 
 
@@ -24,6 +25,12 @@ class Product:
         if len(row) < 6:
             return None
         return Product(row[0], row[1], row[2], row[3], row[4], row[5])
+    
+    @staticmethod
+    def from_id(product_id: int) -> "Product":
+        sql = SQL.get_default()
+        sql.execute(f"select * from products where product_id = {product_id}")
+        return Product.from_tuple(sql.fetchone())
     
     def get_product_sell_query(self) -> str:
         '''

@@ -14,7 +14,8 @@ copy empty_config.json config.json
 
 cd %appdir%
 
-echo \nWriting script...
+echo:
+echo Writing script...
 echo @echo OFF> %runscript%
 echo set prevdir=%%CD%%>> %runscript%
 echo set appdir=%appdir%>> %runscript%

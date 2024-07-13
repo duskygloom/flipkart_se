@@ -1,4 +1,6 @@
-import mariadb as sql
+import mariadb
+
+from mariadb import ProgrammingError
 from mariadb.cursors import Cursor
 from mariadb.connections import Connection
 
@@ -23,7 +25,7 @@ class SQL:
         Returns connection object if successfully connected, else returns None.
         '''
         try:
-            self.connection = sql.connect(
+            self.connection = mariadb.connect(
                 user=username,
                 password=password,
                 host=hostname,
@@ -89,9 +91,18 @@ class SQL:
         self.connection.rollback()
     
     def fetchone(self) -> tuple:
+        '''
+        Returns
+        -------
+        Returns the first tuple fetched.
+        Returns None if nothing has been fetched.
+        '''
         if not self.cursor:
-            return []
-        return self.cursor.fetchone()
+            return ()
+        try:
+            return self.cursor.fetchone() or ()
+        except ProgrammingError:
+            return ()
     
     def fetchmany(self, size: int = 1) -> list[tuple]:
         if not self.cursor:

@@ -19,7 +19,7 @@ class Actions:
         store = Store()
         invoice = store.buy(product_id)
         if invoice:
-            console.print(invoice)
+            invoice.print()
 
     @staticmethod
     def product_sell(*args):
@@ -57,7 +57,7 @@ class Actions:
         if AccountManager.create_user(username, password):
             console.print(f"User [{styles['highlight']}]{username}[/] created successfully.")
         else:
-            console.print_error(f"User [/][{styles['highlight']}]{username}[/] could not be created.")
+            console.print_error(f"User [{styles['highlight']}]{username}[/] could not be created.")
 
     @staticmethod
     def account_details(*args):
@@ -126,7 +126,7 @@ class Actions:
         if AccountManager.login(username, password):
             console.print(f"Logged in as [{styles['highlight']}]{username}[/]")
         else:
-            console.print_error(f"Could not log in as [/][{styles['highlight']}]{username}[/]")
+            console.print_error(f"Could not log in as [{styles['highlight']}]{username}[/]")
 
     @staticmethod
     def account_logout(*args):
@@ -135,7 +135,7 @@ class Actions:
         if user and AccountManager.logout():
             console.print(f"Logged out of [{styles['highlight']}]{user.name}[/]")
         elif user:
-            console.print_error(f"Could not log out of [/][{styles['highlight']}]{user.name}[/]")
+            console.print_error(f"Could not log out of [{styles['highlight']}]{user.name}[/]")
         else:
             console.print_warning("No account was logged in.")
 

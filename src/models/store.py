@@ -5,7 +5,7 @@ storing products from and into databases.
 
 from typing import Generator
 
-from mysql.connector.errors import InterfaceError
+from mariadb import ProgrammingError
 
 from rich.box import SQUARE
 from rich.table import Table
@@ -32,16 +32,23 @@ def get_result_table(products: list[Product]) -> Table:
         table.add_row(str(product.product_id), product.name, product.description, get_currency_string(product.price), get_currency_string(product.price-product.discount))
     return table
 
+
+def product_available(product_id: int) -> bool:
+    sql = SQL.get_default()
+    sql.execute(f"select buyer_name from transactions where product_id = {product_id} and isnull(buyer_name)")
+    return bool(len(sql.fetchone()))
+
 class Store:
     sql: SQL
+    config: config_t
 
     def __init__(self):
         self.sql = SQL.get_default()
+        self.config = get_config()
 
     def search(self, query: str) -> Generator[Table | str, None, None]:
         self.sql.execute(f"select * from products natural join transactions where isnull(buyer_name) and (keywords like '%,{query},%' or keywords like '%,{query}' or keywords like '{query},%' or keywords like '{query}')")
-        config = get_config()
-        perpage = config['result_per_page']
+        perpage = self.config['result_per_page']
         results = self.sql.fetchall()
         begin = 0
         while begin < len(results):
@@ -56,25 +63,28 @@ class Store:
         if not buyer:
             console.print("Log into your account to buy.")
             return None
+        # check if available
+        if not product_available(product_id):
+            console.print_warning(f"Product {product_id} has already been sold.")
+            return None
         # find the current price
-        self.sql.execute(f"select price - discount from product where product_id = {product_id}")
-        try:
-            price_tuple = self.sql.fetchone()
-        except InterfaceError:
+        self.sql.execute(f"select price-discount from products where product_id = {product_id}")
+        price_tuple = self.sql.fetchone()
+        if len(price_tuple) < 1:
             console.print_error(f"Could not complete transaction for product {product_id}")
             return None
         price = price_tuple[0]
         # update transactions
         self.sql.execute(f"update transactions set buyer_name = '{self.config['current_user']}', bought_time = '{get_current_strftime()}', bought_price = {price} where product_id = {product_id}")
         # fetch the seller
-        self.sql.execute(f"select username, address, contact from accounts natural join transactions where product_id = '{product_id}")
+        self.sql.execute(f"select username, address, contact from accounts natural join transactions where product_id = {product_id}")
         seller = Seller.from_tuple(self.sql.fetchone())
         if not seller:
             console.print("Could not find the seller.")
             self.sql.rollback()
             return None
         self.sql.commit()
-        return Invoice(Order(buyer, get_current_strftime(), seller))
+        return Invoice(Order(buyer, get_current_strftime(), seller, [Product.from_id(product_id)]))
 
     def sell(self) -> bool:
         '''

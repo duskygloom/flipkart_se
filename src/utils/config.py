@@ -49,6 +49,7 @@ def save_config(config_data: config_t):
 
 
 __all__ = [
+    "config_t",
     "get_config",
     "save_config"
 ]

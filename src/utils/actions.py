@@ -61,9 +61,11 @@ def account_update_contact():
 
 
 def account_update_password():
-    user = AccountManager.logged_user()
+    styles = get_styles()
+    username = Prompt.ask("Username")
+    user = User.from_name(username)
     if not user:
-        console.print_warning("Log into your account to change your contact.")
+        console.print(f"User [{styles['highlight']}]{username}[/] does not exist.")
         return
     repeat = True
     while repeat:
@@ -73,7 +75,6 @@ def account_update_password():
             repeat = False
         else:
             console.print_warning("Passwords do not match.")
-    styles = get_styles()
     if AccountManager.change_password(user.name, password):
         console.print(f"Password changed for [{styles['highlight']}]{user.name}[/].")
     else:

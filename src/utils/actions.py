@@ -105,7 +105,10 @@ class Actions:
         while repeat:
             password = Prompt.ask("New password", password=True)
             repassword = Prompt.ask("Repeat password", password=True)
-            repeat = (password != repassword)
+            if password == repassword:
+                repeat = False
+            else:
+                console.print_warning("Passwords do not match.")
         styles = get_styles()
         if AccountManager.change_password(user.name, password):
             console.print(f"Password changed for [{styles['highlight']}]{user.name}[/].")

@@ -22,9 +22,15 @@ git clone https://github.com/duskygloom/flipkart_se
 
 In case git is not installed, download the zip from the [**github**](https://github.com/duskygloom/flipkart_se) and extract it.
 
+**Ensure that root account in mysql/mariadb is properly setup and that mysql/mariadb service is running before proceeding.**
+
+To start mysql/mariadb service:
+1. Search for services in start menu and open it.
+2. Search for mysql/mariadb service (*it will have a similar name*) and start it.
+
 Go into the project directory and create a virtual environment by using venv.
 ```batch
-cd flipkart_se
+cd flipkart_se/
 python -m venv .
 ```
 
@@ -58,12 +64,24 @@ Clone the project repository from github.
 ```sh
 git clone https://github.com/duskygloom/flipkart_se
 ```
+
 In case git is not installed, download the zip from the [**github**](https://github.com/duskygloom/flipkart_se) and extract it.
+
+**Ensure that root account in mysql/mariadb is properly setup and that mysql/mariadb service is running before proceeding.**
+
+To start mysql/mariadb service in systemctl init systems:
+```sh
+sudo systemctl mysqld/mariadb start
+```
+In other systems:
+```sh
+sudo service mysqld/mariadb start
+```
 
 Go into the project directory and create a virtual environment by using venv.
 ```sh
-cd flipkart_se
-python -m venv .
+cd flipkart_se/
+python3 -m venv .
 ```
 
 Now run the installation shell script.

@@ -6,7 +6,7 @@ storing products from and into databases.
 from typing import Generator
 
 from rich.box import SQUARE
-from rich.panel import Panel
+from rich.table import Table
 from rich.prompt import Prompt
 
 from utils.sql import *
@@ -23,17 +23,21 @@ from models.invoice import *
 from models.account_manager import *
 
 
-def get_result_panel(products: list[Product]) -> Panel:
-    panel_text = ""
-    styles = get_styles()
+def get_result_table(products: list[Product]) -> Table:
+    # panel_text = ""
+    # styles = get_styles()
+    # for product in products:
+    #     panel_text += f"[{styles['app_title']}]ID[/]{11*' '}[{styles['app_body']}]{product.product_id}[/]\n"
+    #     panel_text += f"[{styles['app_title']}]Name[/]{9*' '}[{styles['app_body']}]{product.name}[/]\n"
+    #     panel_text += f"[{styles['app_title']}]Description[/]{2*' '}[{styles['app_body']}]{product.description}[/]\n"
+    #     panel_text += f"[{styles['app_title']}]Price[/]{8*' '}[{styles['app_body']}]{get_currency_string(product.price)}[/]\n"
+    #     panel_text += f"[{styles['app_title']}]Discount[/]{5*' '}[{styles['app_body']}]{get_currency_string(product.discount)}[/]\n"
+    # panel_text = panel_text.rstrip()
+    # return Panel(panel_text, box=SQUARE, title=f"[{styles['highlight']}]Results[/]")
+    table = Table("ID", "Name", "Description", "Price", "Discount", caption="Results", box=SQUARE)
     for product in products:
-        panel_text += f"[{styles['app_title']}]ID[/]{11*' '}[{styles['app_body']}]{product.product_id}[/]\n"
-        panel_text += f"[{styles['app_title']}]Name[/]{9*' '}[{styles['app_body']}]{product.name}[/]\n"
-        panel_text += f"[{styles['app_title']}]Description[/]{2*' '}[{styles['app_body']}]{product.description}[/]\n"
-        panel_text += f"[{styles['app_title']}]Price[/]{8*' '}[{styles['app_body']}]{get_currency_string(product.price)}[/]\n"
-        panel_text += f"[{styles['app_title']}]Discount[/]{6*' '}[{styles['app_body']}]{get_currency_string(product.discount)}[/]\n"
-    panel_text = panel_text.rstrip()
-    return Panel(panel_text, box=SQUARE, title=f"[{styles['highlight']}]")
+        table.add_row(product.id, product.name, product.description, get_currency_string(product.price), get_currency_string(product.discount))
+    return table
 
 class Store:
     sql: SQL
@@ -42,14 +46,14 @@ class Store:
     def __init__(self):
         self.sql = SQL.get_default()
 
-    def search(self, query: str) -> Generator[Panel | str, None, None]:
+    def search(self, query: str) -> Generator[Table | str, None, None]:
         self.sql.execute(f"select * from products natural join transactions where isnull(buyer_name) and (keywords like '%,{query},%' or keywords like '%,{query}' or keywords like '{query},%' or keywords like '{query}')")
         results = self.sql.fetchmany(self.config['result_per_page'])
         while len(results) > 0:
             products = [Product.from_tuple(result) for result in results]
             results = self.sql.fetchmany(self.config['result_per_page'])
-            yield get_result_panel(products) if len(products) > 0 else ""
-        return "No product found"
+            yield get_result_table(products) if len(products) > 0 else ""
+        return
 
     def buy(self, product_id: int) -> Invoice:
         # fetch the buyer

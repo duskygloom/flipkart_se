@@ -32,8 +32,8 @@ class Product:
         Returns the query to be ran in the products table
         when a new product is added by a seller.
         '''
-        query = "insert into products (keywords, description, price, discount) values "
-        query += f"('{','.join(self.keywords)}', '{self.description}', {self.price}, {self.discount})"
+        query = "insert into products (name, keywords, description, price, discount) values "
+        query += f"('{self.name}', '{','.join(self.keywords)}', '{self.description}', {self.price}, {self.discount})"
         return query
     
     def get_product_transaction_query(self, seller: Seller) -> str:

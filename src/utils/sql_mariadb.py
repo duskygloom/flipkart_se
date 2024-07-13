@@ -31,7 +31,7 @@ class SQL:
             )
             self.cursor = self.connection.cursor()
         except Exception as e:
-            logger.error(f"Cannot connect to {database} database using {username}")
+            console.print_error(f"Cannot connect to {database} database using {username}")
             self.connection = self.cursor = None
 
     def __del__(self):
@@ -74,7 +74,7 @@ class SQL:
             if commit:
                 self.connection.commit()
         except Exception as e:
-            logger.error(e)
+            console.print_error(e)
             return False
         return True
     

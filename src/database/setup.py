@@ -47,7 +47,7 @@ def primary_setup() -> bool:
     config = get_config()
     # get root data
     root_database = "mysql"
-    logger.warning("Root mysql account will be used for setup. It is a one time thing.")
+    console.print_warning("Root mysql account will be used for setup. It is a one time thing.")
     root_username = config['root_username']
     if not root_username:
         root_username = Prompt.ask("MySQL root username")
@@ -63,7 +63,7 @@ def primary_setup() -> bool:
         return False
     # finding suffix
     if not sql.execute("select user from user"):
-        logger.error("Could not find user table in mysql database.")
+        console.print_error("Could not find user table in mysql database.")
         return False
     all_users = sql.fetchall()
     sql.execute("show databases")

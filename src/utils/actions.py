@@ -13,7 +13,7 @@ class Actions:
     @staticmethod
     def product_buy(*args):
         if len(args) <= 0:
-            logger.error("Product ID has not been specified.")
+            console.print_error("Product ID has not been specified.")
             return
         product_id = args[0]
         store = Store()
@@ -27,12 +27,12 @@ class Actions:
         if store.sell():
             console.print("Product added successfully.")
         else:
-            console.print("Product could not be added.")
+            console.print_error("Product could not be added.")
 
     @staticmethod
     def product_search(*args):
         if len(args) <= 0:
-            logger.error("No query has been searched.")
+            console.print_error("No query has been searched.")
             return
         query = " ".join(args)
         store = Store()
@@ -43,7 +43,7 @@ class Actions:
                 console.print(next(results))
                 show_next = Prompt.ask("Continue", choices=['y', 'n'])
             except StopIteration:
-                console.print("No product found.")
+                console.print_error("No product found.")
                 show_next = 'n'
 
     @staticmethod
@@ -57,13 +57,13 @@ class Actions:
         if AccountManager.create_user(username, password):
             console.print(f"User [{styles['highlight']}]{username}[/] created successfully.")
         else:
-            console.print(f"User [{styles['highlight']}]{username}[/] could not be created.")
+            console.print_error(f"User [/][{styles['highlight']}]{username}[/] could not be created.")
 
     @staticmethod
     def account_details(*args):
         user = AccountManager.logged_user()
         if not user:
-            console.print("Log into your account to check your account details.")
+            console.print_warning("Log into your account to check your account details.")
             return
         console.print(AccountManager.get_account_details(user))
 
@@ -71,14 +71,15 @@ class Actions:
     def account_change_address(*args):
         user = AccountManager.logged_user()
         if not user:
-            console.print("Log into your account to change your address.")
+            console.print_warning("Log into your account to change your address.")
             return
         address = Prompt.ask("Address")
         password = Prompt.ask("Password", password=True)
+        styles = get_styles()
         if AccountManager.change_address(user.name, password, address):
-            console.print("Address changed successfully.")
+            console.print(f"Address changed for user [{styles['highlight']}]{user.name}[/]")
         else:
-            console.print("Failed to change address.")
+            console.print_error("Failed to change address.")
     
     @staticmethod
     def account_change_contact(*args):
@@ -88,15 +89,33 @@ class Actions:
             return
         contact = Prompt.ask("Contact")
         password = Prompt.ask("Password", password=True)
+        styles = get_styles()
         if AccountManager.change_contact(user.name, password, contact):
-            console.print("Contact changed successfully.")
+            console.print(f"Contact changed for user [{styles['highlight']}]{user.name}[/].")
         else:
-            console.print("Failed to change contact.")
+            console.print_error("Failed to change contact.")
+    
+    @staticmethod
+    def account_change_password(*args):
+        user = AccountManager.logged_user()
+        if not user:
+            console.print_warning("Log into your account to change your contact.")
+            return
+        repeat = True
+        while repeat:
+            new_password = Prompt.ask("New password", password=True)
+            repeat_password = Prompt.ask("Repeat password", password=True)
+            repeat = new_password == repeat_password
+        styles = get_styles()
+        if AccountManager.change_password(user.name, new_password):
+            console.print(f"Password changed for [{styles['highlight']}]user.name[/].")
+        else:
+            console.print_error("Failed to change password.")
 
     @staticmethod
     def account_login(*args):
         if len(args) < 1:
-            console.print("Username was not provided.")
+            console.print_warning("Username was not provided.")
             return
         username = args[0]
         styles = get_styles()
@@ -104,7 +123,7 @@ class Actions:
         if AccountManager.login(username, password):
             console.print(f"Logged in as [{styles['highlight']}]{username}[/]")
         else:
-            console.print(f"Could not log in as [{styles['highlight']}]{username}[/]")
+            console.print_error(f"Could not log in as [/][{styles['highlight']}]{username}[/]")
 
     @staticmethod
     def account_logout(*args):
@@ -113,9 +132,9 @@ class Actions:
         if user and AccountManager.logout():
             console.print(f"Logged out of [{styles['highlight']}]{user.name}[/]")
         elif user:
-            console.print(f"Could not log out of [{styles['highlight']}]{user.name}[/]")
+            console.print_error(f"Could not log out of [/][{styles['highlight']}]{user.name}[/]")
         else:
-            console.print(f"No account was logged in.")
+            console.print_warning("No account was logged in.")
 
     @staticmethod
     def setup_full(*args):
@@ -131,23 +150,23 @@ class Actions:
     @staticmethod
     def setup_primary(*args):
         if primary_setup():
-            logger.info("Primary setup successful.")
+            console.print_warning("Primary setup successful.")
         else:
-            logger.error("Primary setup unsuccessful.")
+            console.print_error("Primary setup unsuccessful.")
 
     @staticmethod
     def setup_secondary(*args):
         if secondary_setup():
-            logger.info("Secondary setup successful.")
+            console.print_warning("Secondary setup successful.")
         else:
-            logger.error("Secondary setup unsuccessful.")
+            console.print_error("Secondary setup unsuccessful.")
 
     @staticmethod
     def setup_optional(*args):
         if optional_setup():
-            logger.info("Optional setup successful.")
+            console.print_warning("Optional setup successful.")
         else:
-            logger.error("Optional setup unsuccessful.")
+            console.print_error("Optional setup unsuccessful.")
 
     @staticmethod
     def setup_reset_data(*args):
@@ -155,9 +174,9 @@ class Actions:
         if len(args) > 0:
             table = args[0]
         if reset_data(table):
-            logger.info("Data reset successful.")
+            console.print_warning("Data reset successful.")
         else:
-            logger.info("Data reset unsuccessful.")
+            console.print_error("Could not reset data.")
 
 
 __all__ = [

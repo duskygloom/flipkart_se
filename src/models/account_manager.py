@@ -78,6 +78,17 @@ class AccountManager:
         return sql.execute(f"update accounts set contact = '{contact}' where username = '{username}' and password = '{password}'", commit=True)
     
     @staticmethod
+    def change_password(username: str, newpassword: str) -> bool:
+        '''
+        Description
+        -----------
+        Changes password for username.
+        No two factor authentication during password change.
+        '''
+        sql = SQL.get_default()
+        return sql.execute(f"update accounts set password = '{newpassword}' where username = '{username}'", commit=True)
+    
+    @staticmethod
     def logged_user() -> User:
         '''
         Returns

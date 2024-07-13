@@ -61,7 +61,7 @@ class Store:
         self.sql.execute(f"select price-discount from product where product_id = {product_id}")
         price_tuple = self.sql.fetchone()
         if len(price_tuple) < 1:
-            logger.error(f"Could not complete transaction for product {product_id}")
+            console.print_error(f"Could not complete transaction for product {product_id}")
             return None
         price = price_tuple[0]
         # update transactions
@@ -98,17 +98,17 @@ class Store:
         # add product to products table
         product_query = product.get_product_sell_query(seller)
         if not self.sql.execute(product_query):
-            logger.error("Could not add product to database.")
+            console.print_error("Could not add product to database.")
             self.sql.rollback()
             return False
         if not self.sql.execute("select max(product_id) from products"):
-            logger.error("Could not fetch the latest product from table.")
+            console.print_error("Could not fetch the latest product from table.")
             return False
         product.product_id = self.sql.fetchone()[0]
         # add product to transactions table
         transaction_query = product.get_product_transaction_query(seller)
         if not self.sql.execute(transaction_query):
-            logger.error("Could not add product to database.")
+            console.print_error("Could not add product to database.")
             self.sql.rollback()
             return False
         self.sql.commit()

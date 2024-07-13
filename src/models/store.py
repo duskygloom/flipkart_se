@@ -32,17 +32,20 @@ def get_result_table(products: list[Product]) -> Table:
 
 class Store:
     sql: SQL
-    config = get_config()
 
     def __init__(self):
         self.sql = SQL.get_default()
 
     def search(self, query: str) -> Generator[Table | str, None, None]:
         self.sql.execute(f"select * from products natural join transactions where isnull(buyer_name) and (keywords like '%,{query},%' or keywords like '%,{query}' or keywords like '{query},%' or keywords like '{query}')")
-        results = self.sql.fetchmany(self.config['result_per_page'])
-        while len(results) > 0:
-            products = [Product.from_tuple(result) for result in results]
+        config = get_config()
+        perpage = config['result_per_page']
+        results = self.sql.fetchall()
+        begin = 0
+        while begin < len(results)-1:
+            products = [Product.from_tuple(result) for result in results[begin:begin+perpage]]
             results = self.sql.fetchmany(self.config['result_per_page'])
+            begin += perpage
             yield get_result_table(products) if len(products) > 0 else ""
         return
 

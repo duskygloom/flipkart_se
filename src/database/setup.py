@@ -157,6 +157,9 @@ def reset_data(table: str = "") -> bool:
         if not sql.execute(f"delete from products"):
             sql.rollback()
             return False
+    if not sql.execute("alter table products auto_increment = 1"):
+        sql.rollback()
+        return False
     sql.commit()
     return True
 

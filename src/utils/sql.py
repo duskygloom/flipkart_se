@@ -1,17 +1,18 @@
-import mysql.connector as sql
-from mysql.connector.abstracts import MySQLCursorAbstract, MySQLConnectionAbstract
+import mariadb as sql
+from mariadb.cursors import Cursor
+from mariadb.connections import Connection
 
 from utils.config import *
 from utils.console import *
 
 
 class SQL:
-    cursor: MySQLCursorAbstract
-    connection: MySQLConnectionAbstract
+    cursor: Cursor
+    connection: Connection
 
     history: str = "database/history.sql"
 
-    def __init__(self, username: str, password: str, hostname: str = "localhost", database: str = "") -> MySQLConnectionAbstract:
+    def __init__(self, username: str, password: str, hostname: str = "localhost", database: str = ""):
         '''
         Description
         -----------

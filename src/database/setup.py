@@ -87,11 +87,11 @@ def primary_setup() -> bool:
         suffix += 1
     if not sql.execute(f"create database {database_name}", commit=True):
         return False
-    config['mysql_database'] = database_name
-    save_config(config)
     # permissions
     if not sql.execute(f"grant all on {config['mysql_database']}.* to '{config['mysql_username']}'@'{config['mysql_hostname']}'", commit=True):
         return False
+    config['mysql_database'] = database_name
+    save_config(config)
     return True
 
 
